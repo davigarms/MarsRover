@@ -1,12 +1,61 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace MarsRover;
 
 public class MarsRover
 {
-    private int _directionIndex = 0;
-    private string[] _direction = new string[] { "N", "E", "S", "W" };
+    private int _directionIndex;
+    
     private Point _position = new Point(0,0);
+    
+    private const int GroundLength = 9;
+
+    private IDictionary<char, int[]> DirectionToPosition => new Dictionary<char, int[]>
+    {
+        {'N', new [] {0, 1} },
+        {'E', new [] {1, 0} },
+        {'S', new [] {0,-1} },
+        {'W', new [] {-1,0} },
+    };
+    
+    private  IDictionary<char, int> RotationToIndex => new Dictionary<char, int>
+    {
+        {'R', 1 },
+        {'L', -1 },
+    };
+
+    private char[] Directions =>  DirectionToPosition.Select(d => d.Key).ToArray();
+    
+    private char Direction => DirectionToPosition.Select(d => d.Key).ToArray()[_directionIndex];
+  
+    private void UpdateDirection(char rotation = 'R')
+    {
+        _directionIndex += RotationToIndex.SingleOrDefault(r => r.Key == rotation).Value;
+        if (_directionIndex > Directions.Length - 1) _directionIndex = 0;
+        if (_directionIndex < 0) _directionIndex = Directions.Length - 1;
+    }
+
+    private void UpdatePosition()
+    {
+        var (_, newPosition) = DirectionToPosition
+            .SingleOrDefault(d => d.Key == Direction);
+
+        _position.X += newPosition[0];
+        _position.Y += newPosition[1];
+        
+        AdjustPosition();
+    }
+
+    private void AdjustPosition()
+    {
+        if (_position.X < 0) _position.X = GroundLength;
+        if (_position.X > GroundLength) _position.X = 0;
+        if (_position.Y < 0) _position.Y = GroundLength;
+        if (_position.Y > GroundLength) _position.Y = 0;
+    }
     
     public string MoveRover(string moveCommands)
     {
@@ -15,23 +64,19 @@ public class MarsRover
             switch (moveCommand)
             {
                 case 'M':
-                    if (_direction[_directionIndex] == "N") _position.Y += 1;
-                    if (_direction[_directionIndex] == "E") _position.X += 1;
-                    if (_direction[_directionIndex] == "S") _position.Y -= 1;
-                    if (_direction[_directionIndex] == "W") _position.X -= 1;
+                    UpdatePosition();
                     break;
                 case 'R':
-                    _directionIndex++;
+                    UpdateDirection(moveCommand);
                     break;
-                default:
+                case 'L':
+                    UpdateDirection(moveCommand);
+                    break;
+                default: 
                     throw new NotImplementedException();
             }
-
-            _directionIndex = _directionIndex < _direction.Length ? _directionIndex : 0;
-            _position.X = _position.X >= 0 ? _position.X : 0;
-            _position.Y = _position.Y >= 0 ? _position.Y : 0;
         }
 
-        return $"{_position.X}:{_position.Y}:{_direction[_directionIndex]}";
+        return $"{_position.X}:{_position.Y}:{Direction}";
     }
 }

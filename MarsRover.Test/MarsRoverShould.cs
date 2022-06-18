@@ -20,10 +20,12 @@ public class MarsRoverShould
     [TestCase("MRMMMRMRM", "2:0:W")]
     [TestCase("MRMMMRMRMM", "1:0:W")]
     [TestCase("MRMMMRMRMMM", "0:0:W")]
-    [TestCase("MRMMMRMRMMMM", "0:0:W")]
-    [TestCase("MRMMMRMRMMMM", "0:0:W")]
-    [TestCase("MRMMMRMRMMMMRRR", "0:0:S")]
-    [TestCase("MRMMMRMRMMMMRRRM", "0:0:S")]
+    [TestCase("MRMMMRMRMMMM", "9:0:W")]
+    [TestCase("MRMMMRMRMMMML", "9:0:S")]
+    [TestCase("MRMMMRMRMMMMLM", "9:9:S")]
+    [TestCase("MRMMMRMRMMMMLMRRM", "9:0:N")]
+    [TestCase("MMRMMLM", "2:3:N")]
+    [TestCase("MMMMMMMMMM", "0:0:N")]
     public void MoveRover(string moveCommands, string expected)
     {
         var finalPosition = new MarsRover().MoveRover(moveCommands);
