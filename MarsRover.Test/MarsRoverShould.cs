@@ -2,11 +2,6 @@ namespace MarsRover.Test;
 
 public class MarsRoverShould
 {
-    [SetUp]
-    public void Setup()
-    {
-    }
-
     [TestCase("M", "0:1:N")]
     [TestCase("MM", "0:2:N")]
     [TestCase("MMM", "0:3:N")]

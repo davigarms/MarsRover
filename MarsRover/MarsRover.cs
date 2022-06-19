@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-
-namespace MarsRover;
+﻿namespace MarsRover;
 
 public class MarsRover
 {
     private int _directionIndex;
     
-    private Point _position = new Point(0,0);
+    private int _x;
+    
+    private int _y;
     
     private const int GroundLength = 9;
 
@@ -29,13 +26,41 @@ public class MarsRover
 
     private char[] Directions =>  DirectionToPosition.Select(d => d.Key).ToArray();
     
-    private char Direction => DirectionToPosition.Select(d => d.Key).ToArray()[_directionIndex];
-  
+    private char Direction => Directions[DirectionIndex];
+
+    private int DirectionIndex
+    {
+        get => _directionIndex;
+        set
+        {
+            _directionIndex = value < 0 ? Directions.Length - 1 : value;
+            _directionIndex = _directionIndex > Directions.Length - 1 ? 0 : _directionIndex;
+        }
+    }
+
+    private int X
+    {
+        get => _x;
+        set
+        {
+            _x = value < 0 ? GroundLength : value;
+            _x = _x > GroundLength ? 0 : _x;
+        }
+    }
+    
+    private int Y
+    {
+        get => _y;
+        set
+        {
+            _y = value < 0 ? GroundLength : value;
+            _y = _y > GroundLength ? 0 : _y;
+        }
+    }
+    
     private void UpdateDirection(char rotation = 'R')
     {
-        _directionIndex += RotationToIndex.SingleOrDefault(r => r.Key == rotation).Value;
-        if (_directionIndex > Directions.Length - 1) _directionIndex = 0;
-        if (_directionIndex < 0) _directionIndex = Directions.Length - 1;
+        DirectionIndex += RotationToIndex.SingleOrDefault(r => r.Key == rotation).Value;
     }
 
     private void UpdatePosition()
@@ -43,18 +68,8 @@ public class MarsRover
         var (_, newPosition) = DirectionToPosition
             .SingleOrDefault(d => d.Key == Direction);
 
-        _position.X += newPosition[0];
-        _position.Y += newPosition[1];
-        
-        AdjustPosition();
-    }
-
-    private void AdjustPosition()
-    {
-        if (_position.X < 0) _position.X = GroundLength;
-        if (_position.X > GroundLength) _position.X = 0;
-        if (_position.Y < 0) _position.Y = GroundLength;
-        if (_position.Y > GroundLength) _position.Y = 0;
+        X += newPosition[0];
+        Y += newPosition[1];
     }
     
     public string MoveRover(string moveCommands)
@@ -67,8 +82,6 @@ public class MarsRover
                     UpdatePosition();
                     break;
                 case 'R':
-                    UpdateDirection(moveCommand);
-                    break;
                 case 'L':
                     UpdateDirection(moveCommand);
                     break;
@@ -77,6 +90,6 @@ public class MarsRover
             }
         }
 
-        return $"{_position.X}:{_position.Y}:{Direction}";
+        return $"{X}:{Y}:{Direction}";
     }
 }
