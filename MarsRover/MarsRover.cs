@@ -1,4 +1,7 @@
-﻿namespace MarsRover;
+﻿using System.Drawing;
+
+namespace MarsRover;
+
 
 public class MarsRover
 {
@@ -7,34 +10,26 @@ public class MarsRover
     private int _x;
     
     private int _y;
-    
-    private const int GroundLength = 9;
 
-    private IDictionary<char, int[]> DirectionToPosition => new Dictionary<char, int[]>
-    {
-        {'N', new [] {0, 1} },
-        {'E', new [] {1, 0} },
-        {'S', new [] {0,-1} },
-        {'W', new [] {-1,0} },
-    };
+    private bool _obstacleFound = false;
     
+    private string ObstacleFound => _obstacleFound ? "O:" : "";
+
     private  IDictionary<char, int> RotationToIndex => new Dictionary<char, int>
     {
         {'R', 1 },
         {'L', -1 },
     };
-
-    private char[] Directions =>  DirectionToPosition.Select(d => d.Key).ToArray();
     
-    private char Direction => Directions[DirectionIndex];
+    private char Direction => Map.Directions[DirectionIndex];
 
     private int DirectionIndex
     {
         get => _directionIndex;
         set
         {
-            _directionIndex = value < 0 ? Directions.Length - 1 : value;
-            _directionIndex = _directionIndex > Directions.Length - 1 ? 0 : _directionIndex;
+            _directionIndex = value < 0 ? Map.Directions.Length - 1 : value;
+            _directionIndex = _directionIndex > Map.Directions.Length - 1 ? 0 : _directionIndex;
         }
     }
 
@@ -43,8 +38,8 @@ public class MarsRover
         get => _x;
         set
         {
-            _x = value < 0 ? GroundLength : value;
-            _x = _x > GroundLength ? 0 : _x;
+            _x = value < 0 ? Map.Length : value;
+            _x = _x > Map.Length ? 0 : _x;
         }
     }
     
@@ -53,8 +48,8 @@ public class MarsRover
         get => _y;
         set
         {
-            _y = value < 0 ? GroundLength : value;
-            _y = _y > GroundLength ? 0 : _y;
+            _y = value < 0 ? Map.Length : value;
+            _y = _y > Map.Length ? 0 : _y;
         }
     }
     
@@ -65,21 +60,28 @@ public class MarsRover
 
     private void UpdatePosition()
     {
-        var (_, newPosition) = DirectionToPosition
+        var (_, newPosition) = Map.DirectionToPosition
             .SingleOrDefault(d => d.Key == Direction);
-
-        X += newPosition[0];
-        Y += newPosition[1];
+        
+        if (Map.Obstacles.Any(o => X + newPosition[0] == o.X && Y + newPosition[1] == o.Y))
+        {
+            _obstacleFound = true;
+        }
+        else
+        {
+            X += newPosition[0];
+            Y += newPosition[1];
+        }
     }
     
-    public string MoveRover(string moveCommands)
+    public string Move(string moveCommands)
     {
         foreach (var moveCommand in moveCommands)
         {
             switch (moveCommand)
             {
                 case 'M':
-                    UpdatePosition();
+                    if (!_obstacleFound) UpdatePosition();
                     break;
                 case 'R':
                 case 'L':
@@ -90,6 +92,6 @@ public class MarsRover
             }
         }
 
-        return $"{X}:{Y}:{Direction}";
+        return $"{ObstacleFound}{X}:{Y}:{Direction}";
     }
 }
