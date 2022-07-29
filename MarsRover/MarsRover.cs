@@ -74,18 +74,21 @@ public class MarsRover
     {
         foreach (var moveCommand in moveCommands)
         {
-            switch (moveCommand)
-            {
-                case 'M':
-                    if (!_obstacleFound) UpdatePosition();
-                    break;
-                case 'R':
-                case 'L':
-                    UpdateDirection(moveCommand);
-                    break;
-                default: 
-                    throw new NotImplementedException();
-            }
+            if (!_obstacleFound) 
+                switch (moveCommand)
+                {
+                    case 'M':
+                        UpdatePosition();
+                        break;
+                    case 'R':
+                    case 'L':
+                        UpdateDirection(moveCommand);
+                        break;
+                    default: 
+                        throw new NotImplementedException();
+                }
+            else 
+                break;
         }
 
         return $"{ObstacleText}{X}:{Y}:{Direction}";

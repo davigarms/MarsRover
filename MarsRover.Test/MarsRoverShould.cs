@@ -19,7 +19,7 @@ public class MarsRoverShould
     [TestCase("MRMMMRMRMMMML", "9:0:S")]
     [TestCase("MRMMMRMRMMMMLM", "9:9:S")]
     [TestCase("MRMMMRMRMMMMLMRRM", "9:0:N")]
-    [TestCase("MMRMMLM", "O:1:2:N")]
+    [TestCase("MMRMMLM", "O:1:2:E")]
     [TestCase("MMMMMMMMMM", "O:0:2:N")]
     [TestCase("MMMM", "O:0:2:N")]
     public void Move(string moveCommands, string expected)
