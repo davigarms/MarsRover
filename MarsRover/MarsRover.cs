@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-
-namespace MarsRover;
-
+﻿namespace MarsRover;
 
 public class MarsRover
 {
@@ -11,11 +8,11 @@ public class MarsRover
     
     private int _y;
 
-    private bool _obstacleFound = false;
+    private bool _obstacleFound;
     
-    private string ObstacleFound => _obstacleFound ? "O:" : "";
+    private string ObstacleText => _obstacleFound ? "O:" : "";
 
-    private  IDictionary<char, int> RotationToIndex => new Dictionary<char, int>
+    private static IDictionary<char, int> RotationToIndex => new Dictionary<char, int>
     {
         {'R', 1 },
         {'L', -1 },
@@ -60,20 +57,19 @@ public class MarsRover
 
     private void UpdatePosition()
     {
-        var (_, newPosition) = Map.DirectionToPosition
-            .SingleOrDefault(d => d.Key == Direction);
+        var (addX, addY) = Map.AddPositionFromDirection(Direction);
         
-        if (Map.Obstacles.Any(o => X + newPosition[0] == o.X && Y + newPosition[1] == o.Y))
+        if (Map.Obstacles.Any(o => X + addX == o.X && Y + addY == o.Y))
         {
             _obstacleFound = true;
         }
         else
         {
-            X += newPosition[0];
-            Y += newPosition[1];
+            X += addX;
+            Y += addY;
         }
     }
-    
+
     public string Move(string moveCommands)
     {
         foreach (var moveCommand in moveCommands)
@@ -92,6 +88,6 @@ public class MarsRover
             }
         }
 
-        return $"{ObstacleFound}{X}:{Y}:{Direction}";
+        return $"{ObstacleText}{X}:{Y}:{Direction}";
     }
 }
