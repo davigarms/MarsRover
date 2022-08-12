@@ -5,7 +5,6 @@ public class MarsRover
     private int _directionIndex;
     
     private int _x;
-    
     private int _y;
 
     private bool _obstacleFound;
@@ -23,31 +22,28 @@ public class MarsRover
     private int DirectionIndex
     {
         get => _directionIndex;
-        set
-        {
-            _directionIndex = value < 0 ? Map.Directions.Length - 1 : value;
-            _directionIndex = _directionIndex > Map.Directions.Length - 1 ? 0 : _directionIndex;
-        }
+        set => _directionIndex = CheckBoundaries(value, Map.Directions.Length - 1);
     }
 
-    private int X
+    private int CheckMapLengthBoundaries(int value) => CheckBoundaries(value, Map.Length);
+
+    private static int CheckBoundaries(int value, int length)
     {
+        if (value < 0) return length;
+        if (value > length) return 0;
+        return value;
+    }
+
+    private int X { 
         get => _x;
-        set
-        {
-            _x = value < 0 ? Map.Length : value;
-            _x = _x > Map.Length ? 0 : _x;
-        }
+        set => _x = CheckMapLengthBoundaries(value);
     }
     
+
     private int Y
     {
         get => _y;
-        set
-        {
-            _y = value < 0 ? Map.Length : value;
-            _y = _y > Map.Length ? 0 : _y;
-        }
+        set => _y = CheckMapLengthBoundaries(value);
     }
     
     private void UpdateDirection(char rotation = 'R')
