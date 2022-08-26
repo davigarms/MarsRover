@@ -3,6 +3,7 @@ namespace MarsRover.Test;
 public class MarsRoverShould
 {
     [TestCase("M", "0:1:N")]
+    [TestCase("R", "0:0:E")]
     [TestCase("MM", "0:2:N")]
     [TestCase("MMM", "O:0:2:N")]
     [TestCase("MR", "0:1:E")]
@@ -19,12 +20,14 @@ public class MarsRoverShould
     [TestCase("MRMMMRMRMMMML", "9:0:S")]
     [TestCase("MRMMMRMRMMMMLM", "9:9:S")]
     [TestCase("MRMMMRMRMMMMLMRRM", "9:0:N")]
-    [TestCase("MMRMMLM", "O:1:2:E")]
+    [TestCase("MMRMMLM", "2:3:N")]
     [TestCase("MMMMMMMMMM", "O:0:2:N")]
     [TestCase("MMMM", "O:0:2:N")]
     public void Move(string moveCommands, string expected)
     {
-        var finalPosition = new MarsRover().Move(moveCommands);
-        Assert.That(finalPosition, Is.EqualTo(expected));
+        var marsRover = new MarsRover(new Output());
+        marsRover.Move(moveCommands);
+        var output = marsRover.PrintLocation();
+        Assert.That(output, Is.EqualTo(expected));
     }
 }

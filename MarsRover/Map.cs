@@ -6,25 +6,29 @@ public static class Map
 {
     public static char[] Directions => DirectionAddPosition.Select(d => d.Key).ToArray();
 
-    private static IDictionary<char, KeyValuePair<int,int>> DirectionAddPosition => new Dictionary<char, KeyValuePair<int,int>>
+    private static IDictionary<char, Point> DirectionAddPosition => new Dictionary<char, Point>
     {
-        {'N', new KeyValuePair<int,int>( 0, 1) },
-        {'E', new KeyValuePair<int,int>( 1, 0) },
-        {'S', new KeyValuePair<int,int>( 0,-1) },
-        {'W', new KeyValuePair<int,int>(-1, 0) },
+        {'N', new Point( 0, 1) },
+        {'E', new Point( 1, 0) },
+        {'S', new Point( 0,-1) },
+        {'W', new Point(-1, 0) },
     };
 
-    public const int Length = 9;
+    private const int Length = 9;
 
-    public static readonly Point[] Obstacles = new[]
-    {
+    public static readonly Point[] Obstacles = {
         new Point(0,3),
-        new Point(2,2),
     };
+    
+    public static int CheckMapLengthBoundaries(int value) => CheckBoundaries(value, Length);
 
-    public static KeyValuePair<int,int> AddPositionFromDirection(char direction)
+    public static int CheckBoundaries(int value, int length)
     {
-        return DirectionAddPosition
-            .SingleOrDefault(d => d.Key == direction).Value;
+        if (value < 0) return length;
+        return value > length ? 0 : value;
     }
+
+    public static Point AddPositionFromDirection(char direction) =>
+        DirectionAddPosition
+            .SingleOrDefault(d => d.Key == direction).Value;
 }
