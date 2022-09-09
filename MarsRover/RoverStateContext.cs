@@ -14,9 +14,9 @@ public class RoverStateContext
     
     public RoverStateContext(RoverState state) => _currentState = state;
 
-    public void SetState(RoverState state) => _currentState = state;
+    public void Move() => _currentState.Update(this);
 
-    public void Move() => _currentState.Move(this);
+    public void SetState(RoverState state) => _currentState = state;
 
     public void SetObstacleFound(bool obstacleFound) => ObstacleFound = obstacleFound;
     

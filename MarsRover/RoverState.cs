@@ -4,7 +4,7 @@ namespace MarsRover;
 
 public abstract class RoverState
 {
-    public abstract void Move(RoverStateContext context);
+    public abstract void Update(RoverStateContext context);
     
     protected static bool IsObstacleFound(Point nextPosition) => 
         Map.Obstacles.Any(o => nextPosition.X == o.X && nextPosition.Y == o.Y);
@@ -36,17 +36,17 @@ public abstract class RoverState
 
 internal class RotateToLeftState : RoverState
 {
-    public override void Move(RoverStateContext context) => UpdateDirection(-1, context);
+    public override void Update(RoverStateContext context) => UpdateDirection(-1, context);
 }
 
 internal class RotateToRightState : RoverState 
 {
-    public override void Move(RoverStateContext context) => UpdateDirection(1, context);
+    public override void Update(RoverStateContext context) => UpdateDirection(1, context);
 }
 
 internal class MoveForwardState : RoverState
 {
-    public override void Move(RoverStateContext context)
+    public override void Update(RoverStateContext context)
     {
         var nextPosition = GetNextPosition(context);
         if (IsObstacleFound(nextPosition))
